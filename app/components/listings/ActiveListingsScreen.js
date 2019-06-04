@@ -69,6 +69,17 @@ export default class ActiveListingsScreen extends Component<Props> {
     this.setState({ loader: !this.state.loader });
   }
 
+  timeConvert(sec) {
+    var sec_num = parseInt(sec, 10); // don't forget the second param
+    var hours = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - hours * 3600) / 60);
+    var seconds = sec_num - hours * 3600 - minutes * 60;
+    return (
+      <Text style={styles.footerText}>
+        {hours + ":" + minutes + ":" + seconds}
+      </Text>
+    );
+  }
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -96,6 +107,7 @@ export default class ActiveListingsScreen extends Component<Props> {
                     pointsRequired: item.points_required,
                     userName: this.state.userName,
                     userPoints: this.state.userPoints,
+                    description: item.description,
                     docId: item.key
                   })
                 }>
@@ -121,7 +133,7 @@ export default class ActiveListingsScreen extends Component<Props> {
                   <View style={styles.footerContainer}>
                     <View>
                       <Text style={styles.footerText}>
-                        {item.remaining_time}
+                        {this.timeConvert(item.remaining_time)}
                       </Text>
                     </View>
                     <View>

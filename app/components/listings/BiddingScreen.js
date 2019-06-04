@@ -18,10 +18,12 @@ export default class BiddingScreen extends Component<Props> {
     super(props);
     this.state = {
       loader: false,
+      val: "",
       clear: false,
       bids: [],
       bidAmount: "",
       timeRemaining: this.props.navigation.state.params.timeRemaining,
+      description: this.props.navigation.state.params.description,
       userPoints: this.props.navigation.state.params.userPoints
     };
     this.onPress = this.onPress.bind(this);
@@ -43,6 +45,7 @@ export default class BiddingScreen extends Component<Props> {
   };
 
   async onPress() {
+    this.setState({ val: "" });
     if (this.state.timeRemaining == 0) {
       alert("This bid is already finished");
       return 0;
@@ -80,7 +83,7 @@ export default class BiddingScreen extends Component<Props> {
       //sold
       if (
         parseInt(this.state.bidAmount) >
-        parseInt(this.props.navigation.state.params.minPrice)
+        parseInt(this.props.navigation.state.params.pointsRequired)
       ) {
         // saveData("Listings", this.props.navigation.state.params.docId, {
         //   sold: true,
@@ -128,6 +131,11 @@ export default class BiddingScreen extends Component<Props> {
 
   render() {
     const { navigate } = this.props.navigation;
+    var sec_num = parseInt(this.state.timeRemaining, 10); // don't forget the second param
+    var hours = Math.floor(sec_num / 3600);
+    var minutes = Math.floor((sec_num - hours * 3600) / 60);
+    var seconds = sec_num - hours * 3600 - minutes * 60;
+
     return (
       <ScrollView style={styles.container}>
         <Image
@@ -144,8 +152,11 @@ export default class BiddingScreen extends Component<Props> {
         <Text style={styles.titleText}>
           Points Available: {this.state.userPoints}
         </Text>
+        <Text style={styles.titleText}>
+          Description: {this.state.description}
+        </Text>
         <Text style={styles.timeText}>
-          Time Remaining: {this.state.timeRemaining} seconds
+          Time Remaining: {hours + ":" + minutes + ":" + seconds}
         </Text>
 
         <View style={styles.bidsContainer}>
@@ -164,8 +175,8 @@ export default class BiddingScreen extends Component<Props> {
         <TextInput
           placeholder={"Enter your bid here..."}
           style={styles.textInput}
-          onChangeText={text => this.setState({ bidAmount: text })}
-          value={this.state.bidAmount}
+          onChangeText={text => this.setState({ bidAmount: text, val: text })}
+          value={this.state.val}
         />
 
         <View style={styles.pickupButtonContainer}>
